@@ -1,0 +1,128 @@
+html {
+    font-family: Ubuntu;
+    font-size: 25px;
+    color: #fff;
+    background-color: #333
+}
+
+h1 {
+    font-size: 45px;
+    padding-left: 45px;
+}
+
+p {
+    font-size: 25px;
+    padding-left: 45px;
+}
+
+.infoButtonWrapper span {
+    background-image: url(assets/info_icon.png);
+    top: 30px;
+}
+.configButtonWrapper span {
+    background-image: url(assets/config_icon.png);
+    top: 90px;
+}
+
+.infoButtonWrapper span, .configButtonWrapper span {
+    display: inline-block;
+    width: 75px;
+    height: 50px;
+    position: fixed;
+    right: 0px;
+    transition: 0.5s;
+}
+
+.info, .config {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background-color: #222;
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+
+.info p, .config p {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    display: block;
+    transition: 0.3s;
+}
+
+.info h1, .config h1 {
+    font-size: 35px;
+    padding-left: 25px;
+    padding-right: 25px;
+    text-align: center;
+}
+
+.info h2, .config h2 {
+    font-size: 28px;
+    padding-left: 25px;
+    padding-right: 25px;
+    text-align: center;
+}
+
+.info h3, .config h3 {
+    font-size: 20px;
+    padding-left: 25px;
+    padding-right: 25px;
+    font-weight: normal;
+}
+
+.config h3 {
+    text-align: center;
+}
+
+.inputConfig, .inputConfig2 {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-gap: 10px;
+}
+
+.inputConfig label {
+    padding-left: 25px;
+    font-size: 20px;
+    top: 100px;
+    text-align: right;
+}
+
+.inputConfig2 label {
+    padding-left: 45px;
+    font-size: 20px;
+    top: 100px;
+    text-align: right;
+}
+
+.inputConfig input, .inputConfig2 input {
+    width: 92px;
+}
+
+.config button {
+    margin-left: 35px;
+    width: 125px;
+    font-size: 20px;
+    display: block;
+    margin: auto;
+}
+
+.mainWrapper {
+    z-index: 1;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.simulationWrapper {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+}
