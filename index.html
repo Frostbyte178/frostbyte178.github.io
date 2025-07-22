@@ -39,7 +39,7 @@
                 <label for="configRange">Range</label>
                 <input id="configRange" type="number" value="1000" min=0 max="10000" step="100">
 
-                <label for="configDps">DPS</label>
+                <label for="configDps">DPS*</label>
                 <input id="configDps" type="number" value="25000" min="0" step="1000">
 
                 <label for="configIntensity">Intensity</label>
@@ -65,7 +65,8 @@
 
                 <label for="configThickness">Armor Thickness</label>
                 <input id="configThickness" type="number" value="25" min="1" max="50">
-            </div><br>
+            </div>
+            <h3>*For burst lasers, set the DPS to the single shot damage and select 1Q.</h3><br>
 
             <h2>New Laser Stats</h2>
             <h3>Only applies to the new lasers with beam widening.</h3>
@@ -76,7 +77,7 @@
                 <label for="configExpansion">Expansion*</label>
                 <input id="configExpansion" type="number" value="500000" min=0 step="1000">
             </div>
-            <h3>*See info tab for details.</h3><br>
+            <h3>*See info tab for details. Change freely according to your testing data.</h3><br>
 
             <h2>Reset Armor</h2>
             <button type="button" id="resetArmor">Reset</button>
