@@ -548,8 +548,8 @@ function mainLoop() {
     updateQSlider();
 
     // Reset and resize canvas
-    ctx.canvas.width = window.innerWidth;
-    ctx.canvas.height = window.innerHeight;
+    ctx.canvas.width = window.innerWidth - 10;
+    ctx.canvas.height = window.innerHeight - 10;
 
     // Draw the elements
     drawArmor();
