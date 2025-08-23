@@ -161,7 +161,6 @@ class ArmorWall {
 
                 // Start a new segment if the old one ended or we ended up at the top of the next column
                 if ((y == 0 & x > 0) | currentBeam.hp != segmentHp) {
-                    console.log(segmentHp, currentBeam.hp, currentBeam.dead)
                     this.drawContiguousColumn(segmentX, segmentY, (y || this.height) - segmentY, segmentColor, segmentDead);
                     segmentX = x;
                     segmentY = y;
@@ -548,8 +547,8 @@ function mainLoop() {
     updateQSlider();
 
     // Reset and resize canvas
-    ctx.canvas.width = window.innerWidth - 10;
-    ctx.canvas.height = window.innerHeight - 10;
+    ctx.canvas.width = window.innerWidth - 20;
+    ctx.canvas.height = window.innerHeight - 20;
 
     // Draw the elements
     drawArmor();
