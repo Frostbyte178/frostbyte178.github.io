@@ -16,15 +16,19 @@ p {
 }
 
 .infoButtonWrapper span {
-    background-image: url(assets/info_icon.png);
+    background-image: url(assets/info_icon.svg);
     top: 30px;
 }
 .configButtonWrapper span {
-    background-image: url(assets/config_icon.png);
+    background-image: url(assets/config_icon.svg);
     top: 90px;
 }
+.balancingButtonWrapper span {
+    background-image: url(assets/balacing_icon.svg);
+    top: 150px;
+}
 
-.infoButtonWrapper span, .configButtonWrapper span {
+.infoButtonWrapper span, .configButtonWrapper span, .balancingButtonWrapper span {
     display: inline-block;
     width: 75px;
     height: 50px;
@@ -33,7 +37,7 @@ p {
     transition: 0.5s;
 }
 
-.info, .config {
+.info, .config, .balancing {
     height: 100%;
     width: 0;
     position: fixed;
@@ -45,7 +49,7 @@ p {
     transition: 0.5s;
 }
 
-.info p, .config p {
+.info p, .config p, .balancing p {
     padding: 8px 8px 8px 32px;
     text-decoration: none;
     font-size: 25px;
@@ -53,21 +57,28 @@ p {
     transition: 0.3s;
 }
 
-.info h1, .config h1 {
+.info h1, .config h1, .balancing h1 {
     font-size: 35px;
     padding-left: 25px;
     padding-right: 25px;
     text-align: center;
 }
 
-.info h2, .config h2 {
+.info h2, .config h2, .balancing h2 {
     font-size: 28px;
     padding-left: 25px;
     padding-right: 25px;
     text-align: center;
 }
 
-.info h3, .config h3 {
+.balancing h2 {
+    font-size: 28px;
+    padding-left: 25px;
+    padding-right: 25px;
+    text-align: center;
+}
+
+.info h3, .config h3, .balancing h3 {
     font-size: 20px;
     padding-left: 25px;
     padding-right: 25px;

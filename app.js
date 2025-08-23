@@ -1,6 +1,6 @@
 const canvas = document.getElementById("simulationCanvas");
 const ctx = canvas.getContext("2d");
-const sidetabIds = ["infoButton", "configButton", "infoWrapper", "configWrapper"];
+const sidetabIds = ["infoButton", "configButton", "balancingButton", "infoWrapper", "configWrapper", "balancingWrapper"];
 const fps = 40;
 let lastRefresh = -1;
 
