@@ -1,6 +1,8 @@
 const canvas = document.getElementById("simulationCanvas");
 const ctx = canvas.getContext("2d");
 const sidetabIds = ["infoButton", "configButton", "balancingButton", "infoWrapper", "configWrapper", "balancingWrapper"];
+const changeVersionElement = document.getElementById('configVersion');
+const adjustedVersionConfigIds = ["configDamageExponent", "configDamageExponentLabel", "inputConfigDepthTableWrapper"];
 const fps = 40;
 let lastRefresh = -1;
 
@@ -190,8 +192,10 @@ config = {
     q: 0,
     armor: 'metal',
     thickness: 40,
+    version: 'basic',
     inaccuracy: 0.05,
     expansion: 10000,
+    damageExponent: 0.98,
 }
 let singleShotDamage = 25;
 const shotsPerSecond = [40, 1, 2, 4, 8];
@@ -208,7 +212,7 @@ function updateConfig() {
 
         // Save value to config
         config[item] = document.getElementById(documentId).value;
-        if (item != 'armor') {
+        if (item != 'armor' & item != 'version') {
             // Convert all non-armor values to numbers
             config[item] = Number(config[item]);
         }
@@ -275,11 +279,22 @@ for (let id of sidetabIds) {
 }
 
 // Update config when any config element changes
-for(let item in config) {
+for (let item in config) {
     let documentId = `config${item.charAt(0).toUpperCase() + item.slice(1)}`;
     let element = document.getElementById(documentId);
     element.addEventListener('change', updateConfig);
 }
+
+// Update config options when switching between basic and adjusted versions
+changeVersionElement.addEventListener('change', () => {
+    for (let item of adjustedVersionConfigIds) {
+        let element = document.getElementById(item);
+        console.log(config.version)
+        if (config.version == 'basic') element.setAttribute('hidden', true);
+        else element.removeAttribute('hidden');
+    }
+});
+
 
 // Reset armor wall when the reset button is pressed
 let resetButton = document.getElementById('resetArmor');

@@ -66,8 +66,8 @@ p {
 
 .info h2, .config h2, .balancing h2 {
     font-size: 28px;
-    padding-left: 25px;
-    padding-right: 25px;
+    padding-left: 15px;
+    padding-right: 15px;
     text-align: center;
 }
 
@@ -85,11 +85,25 @@ p {
     font-weight: normal;
 }
 
+.info h4 {
+    font-size: 24px;
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align: center;
+}
+
+.config h4 {
+    font-size: 20px;
+    padding-left: 25px;
+    padding-right: 25px;
+    font-weight: normal;
+}
+
 .config h3 {
     text-align: center;
 }
 
-.inputConfig, .inputConfig2 {
+.inputConfig, .inputConfig2, .inputConfigVersion {
     display: grid;
     grid-template-columns: max-content max-content;
     grid-gap: 10px;
@@ -109,8 +123,33 @@ p {
     text-align: right;
 }
 
-.inputConfig input, .inputConfig2 input {
+.inputConfigVersion label {
+    padding-left: 65px;
+    font-size: 20px;
+    top: 100px;
+    text-align: right;
+}
+
+.inputConfig input, .inputConfig2 input, .inputConfigVersion input {
     width: 92px;
+}
+
+.inputConfigDepthTableWrapper table {
+    border-collapse: collapse;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.inputConfigDepthTableWrapper td, .inputConfigDepthTableWrapper th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    font-size: 20px;
+}
+
+.inputConfigDepthTableWrapper tr:nth-child(even) {
+    background-color: #444;
 }
 
 .config button {

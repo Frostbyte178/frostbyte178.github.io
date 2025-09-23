@@ -31,9 +31,13 @@
             <h3>Click on the simulation to fire the modified laser, shift click to fire the in-game version of lasers.</h3>
             <h3>Adjust the configuration of the lasers and the armor in the config menu via the gear icon beneath this tab. The values provided are merely for demonstration and you are welcome to fine-tune them to your liking.</h3><br>
             <h2>Beam Expansion</h2>
-            <h3>Laser beams expand to deal damage in a cone, with the tip placed at the end of the optics. The radius of the cone depends on the damage of the shot.</h3>
+            <h3>Laser beams expand to deal damage in a cone, with the tip placed at the end of the optics. The radius of the cone depends on the damage of the shot. The specifics of how this is done depends on which version of the simulation you're looking at.</h3>
+            <h4>Basic Version</h4>
             <h3>In the 2-dimensional case, expansion is measured in damage per meter of expansion per 100m range. If the config value is set to 1000, then a 1000 damage shot will expand to a radius of 1m at 100m, 2m at 200m, etc.</h3>
             <h3>The expansion for three dimensions would instead be measured in damage per meters squared per 100m range to maintain a linearly increasing area instead of a linearly increasing radius, as the intent is to spread damage across a linearly increasing number of blocks.</h3>
+            <h4>Adjusted Version</h4>
+            <h3>In both 2 and 3 dimensions, the base damage is raised to a constant power (between 0 and 1) before being calculated for beam expansion. If the config value is set to 1000 and the exponent to 0.95, then a 1438 damage shot will expand to a radius of 1m at 100m, 2m at 200m, etc.</h3>
+            <h3>The difference between this and the unadjusted base damage is that this gradual nonlinearity removes the hard cap on penetration depth seen in the basic version.</h3>
         </div>
         <div id="configWrapper" class="config">
             <h1>Config Menu</h1>
@@ -70,7 +74,18 @@
                 <label for="configThickness">Armor Thickness</label>
                 <input id="configThickness" type="number" value="25" min="1" max="50">
             </div>
-            <h3>*For burst lasers, set the DPS to the single shot damage and select 1Q.</h3><br>
+            <h3>*For burst lasers, set the DPS to your single shot damage and select 1Q.</h3><br>
+
+            <h2>New Laser Version</h2>
+            <h4>Basic - First iteration, simpler</h3>
+            <h4>Adjusted - Latest iteration, more balancing</h3>
+            <div class="inputConfigVersion">
+                <label for="configVersion">Version</label>
+                <select id="configVersion">
+                    <option value="basic">Basic</option>
+                    <option value="adjusted">Adjusted</option>
+                </select>
+            </div><br>
 
             <h2>New Laser Stats</h2>
             <h3>Only applies to the new lasers with beam widening.</h3>
@@ -80,19 +95,42 @@
 
                 <label for="configExpansion">Expansion*</label>
                 <input id="configExpansion" type="number" value="500000" min=0 step="1000">
+
+                <label hidden for="configDamageExponent" id="configDamageExponentLabel">Exponent*</label>
+                <input hidden id="configDamageExponent" type="number" value="0.98" min=0 max=1 step="0.01">
             </div>
             <h3>*See info tab for details. Change freely according to your testing data.</h3><br>
 
+            <div hidden class="inputConfigDepthTableWrapper" id="inputConfigDepthTableWrapper">
+                <h2>Adjusted Laser Penetration</h2>
+                <table class="inputConfigDepthTable">
+                    <tr>
+                        <th>Range</th>
+                        <th>Depth</th>
+                    </tr>
+                    <tr>
+                        <td>100m</td>
+                        <td id="depthTable100">a</td>
+                    </tr>
+                    <tr>
+                        <td>1000m</td>
+                        <td id="depthTable1000">b</td>
+                    </tr>
+                </table><br>
+            </div>
+
             <h2>Reset Armor</h2>
-            <button type="button" id="resetArmor">Reset</button>
+            <button type="button" id="resetArmor">Reset</button><br>
         </div>
         <div id="balancingWrapper" class="balancing">
             <h1>Balancing</h1>
-            <h3>This implementation of beam expansion effectively sets a hard limit on how far a laser beam can penetrate into armor, as any increase in damage is spread across the same increase in surface area.</h3>
+            <h3>The basic implementation of beam expansion effectively sets a hard limit on how far a laser beam can penetrate into armor, as any increase in damage is spread across the same increase in surface area.</h3>
             <h3>If you wish to penetrate further, approach the enemy to reduce the expansion or use a higher Q count (at the expense of requiring more shots if inaccuracy is a factor).</h3>
-            <h3>This can be changed as necessary, as tweaking the expansion formula is rather easy and many options exist. A more linear one would mean more incentive to get closer and targeting of specific damage values for maximum pen, an even flatter one would allow shots to pen further with more raw damage.</h3>
+            <h3>The expansion formula can be changed as necessary (as seen in the adjusted version), as tweaking it is rather easy and many options at, above, and below linearity exist.</h3>
             <h3>To avoid outright buffing heavy armor spam, the base damage of lasers can (and should) be increased as necessary. This also makes lasers more viable against things that are not flying.</h3>
-            <h3>To preserve the viability of planes, beam spread would not be customizable, or it would be severely restricted to a small range, so flashlight lasers can't exist where they blast a huge hole in the sky.</h3><br>
+            <h3>To preserve the viability of planes, beam spread would not be customizable, or it would be restricted to a small range, so flashlight lasers can't exist where they blast a huge hole in the sky and char any planes within their cone of death.</h3>
+            <h3>A point of maximum penetration depth in terms of damage leads to very one-dimensional laser construction, which takes the nuance out of the system and is rather boring. This is why a bare minimum of a fixed maximum penetration depth (linear expansion with area) is necessary.</h3>
+            <h3>The sub-linear option makes it possible to brute force higher penetration depths with raw laser energy, but it would be much more efficient to get closer. Having the option, however, introduces more nuance into a builder's design choices.</h3><br>
             <h2>Non-1q Buffs As Necessary</h2>
             <h3>Decrease inaccuracy based on RPM, so non-1q lasers are more capable of drilling through armor in multiple shots. 0q would have the least inaccuracy, then 4q, then 3q, etc.</h3>
             <h3>Adjust base stats so higher Q counts are slightly less efficient but also have inherently more base damage per shot. 1q would be less than 8x as strong per shot as 4q, etc. This brings the extremes of damage profiles closer to the middle, avoiding forced Q count choices for different roles.</h3>
@@ -113,8 +151,8 @@
         let configOpen = false;
         function toggleConfig() {
             configOpen = !configOpen;
-            document.getElementById("configWrapper").style.width = configOpen ? "300px" : "0px";
-            document.getElementById("configButton").style.right = configOpen ? "300px" : "0px";
+            document.getElementById("configWrapper").style.width = configOpen ? "310px" : "0px";
+            document.getElementById("configButton").style.right = configOpen ? "310px" : "0px";
         }
 
         // Toggling the balancing side panel
