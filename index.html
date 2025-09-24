@@ -48,7 +48,7 @@
                 <input id="configRange" type="number" value="1000" min=0 max="10000" step="100">
 
                 <label for="configDps">DPS*</label>
-                <input id="configDps" type="number" value="25000" min="0" step="1000">
+                <input id="configDps" type="number" value="200000" min="0" step="1000">
 
                 <label for="configIntensity">Intensity</label>
                 <input id="configIntensity" type="number" value="60" min="40">
@@ -91,33 +91,26 @@
             <h3>Only applies to the new lasers with beam widening.</h3>
             <div class="inputConfig2">
                 <label for="configInaccuracy">Inaccuracy</label>
-                <input id="configInaccuracy" type="number" value="0.05" min="0" step="0.01">
+                <input id="configInaccuracy" type="number" value="0" min="0" step="0.01">
 
                 <label for="configExpansion">Expansion*</label>
                 <input id="configExpansion" type="number" value="500000" min=0 step="1000">
 
                 <label hidden for="configDamageExponent" id="configDamageExponentLabel">Exponent*</label>
-                <input hidden id="configDamageExponent" type="number" value="0.98" min=0 max=1 step="0.01">
+                <input hidden id="configDamageExponent" type="number" value="0.95" min=0 max=1 step="0.01">
             </div>
             <h3>*See info tab for details. Change freely according to your testing data.</h3><br>
 
             <div hidden class="inputConfigDepthTableWrapper" id="inputConfigDepthTableWrapper">
                 <h2>Adjusted Laser Penetration</h2>
-                <table class="inputConfigDepthTable">
+                <table class="inputConfigDepthTable" id="inputConfigDepthTable">
                     <tr>
-                        <th>Range</th>
-                        <th>Depth</th>
+                        <th class="tableHeader">Damage</th>
+                        <th class="tableHeader">Depth</th>
                     </tr>
-                    <tr>
-                        <td>100m</td>
-                        <td id="depthTable100">a</td>
-                    </tr>
-                    <tr>
-                        <td>1000m</td>
-                        <td id="depthTable1000">b</td>
-                    </tr>
-                </table><br>
+                </table>
             </div>
+            <h3 id="basicMaximumDepth">Basic maximum depth: </h3><br>
 
             <h2>Reset Armor</h2>
             <button type="button" id="resetArmor">Reset</button><br>

@@ -3,13 +3,15 @@ const ctx = canvas.getContext("2d");
 const sidetabIds = ["infoButton", "configButton", "balancingButton", "infoWrapper", "configWrapper", "balancingWrapper"];
 const changeVersionElement = document.getElementById('configVersion');
 const adjustedVersionConfigIds = ["configDamageExponent", "configDamageExponentLabel", "inputConfigDepthTableWrapper"];
+const adjustedDepthTable = document.getElementById("inputConfigDepthTable");
+const basicDepthDisplay = document.getElementById("basicMaximumDepth");
 const fps = 40;
 let lastRefresh = -1;
 
 // Armor constants and classes
 let beamWidth, armorLeftX, armorTopY, armorMiddleY, armorHeight;
 const blockStats = {
-    wood:  {hp: 960,  flammability: 80, resistance: 10, color: '#c9b069'},
+    wood:  {hp: 960,  flammability: 80, resistance: 10, color: '#d9c07e'},
     stone: {hp: 1200, flammability: 0,  resistance: 50, color: '#a39260'},
     alloy: {hp: 1440, flammability: 25, resistance: 50, color: '#aeb2b5'},
     metal: {hp: 1680, flammability: 0,  resistance: 40, color: '#7e868c'},
@@ -195,14 +197,14 @@ config = {
     version: 'basic',
     inaccuracy: 0.05,
     expansion: 10000,
-    damageExponent: 0.98,
+    damageExponent: 1,
 }
 let singleShotDamage = 25;
 const shotsPerSecond = [40, 1, 2, 4, 8];
 
 function updateConfig() {
     // Loop through ids based on config variable names to get data
-    for(let item in config) {
+    for (let item in config) {
         let documentId = `config${item.charAt(0).toUpperCase() + item.slice(1)}`;
         let value = document.getElementById(documentId).value;
         
@@ -223,6 +225,43 @@ function updateConfig() {
 
     // Change armor type
     armorWall.changeTo(config.armor);
+
+    // Change depth table
+    updateAdjustedDepthTable();
+}
+
+const adjustedDepthTableDamageExponents = [2, 3, 4, 5, 6, 7]
+function updateAdjustedDepthTable() {
+    // Clear all but the first row
+    let tableRowCount = adjustedDepthTable.rows.length;
+    for (let i = 1; i < tableRowCount; i++) {
+        adjustedDepthTable.deleteRow(1);
+    }
+
+    // Fill rows with damage values (10^n, 2*10^n, 5*10^n) and depth values
+    let blockHealth = blockStats[config.armor].hp;
+    for (let exponent of adjustedDepthTableDamageExponents) {
+        for (let significand of [1, 2, 5]) {
+            let newRow = adjustedDepthTable.insertRow();
+
+            // Damage cell value
+            let damageCell = newRow.insertCell();
+            let damage = significand * 10 ** exponent;
+            damageCell.textContent = damage.toLocaleString();
+
+            // Depth value from spread
+            let depthCell = newRow.insertCell();
+            let spreadWidth = Math.max(1, damage ** config.damageExponent / config.expansion * config.range / 100 * 2);
+            
+            let depth = damage * getAttenuation() / (spreadWidth * blockHealth);
+            depthCell.textContent = depth.toLocaleString();
+        }
+    }
+
+    // Calculate basic theoretical maximum penetration
+    let basicSpreadWidth = config.range / 100 * 2;
+    let basicDepth = (config.expansion * getAttenuation() / (basicSpreadWidth * blockHealth)).toLocaleString();
+    basicDepthDisplay.textContent = `Basic maximum depth: ${basicDepth}m`;
 }
 
 // Track mouse movements and inputs
@@ -289,7 +328,7 @@ for (let item in config) {
 changeVersionElement.addEventListener('change', () => {
     for (let item of adjustedVersionConfigIds) {
         let element = document.getElementById(item);
-        console.log(config.version)
+
         if (config.version == 'basic') element.setAttribute('hidden', true);
         else element.removeAttribute('hidden');
     }
@@ -427,8 +466,8 @@ let oldLaserLastShotTime = -1;
 let oldLaserAngle;
 let oldLaserDepth;
 function drawOldLaser() {
-    // Do damage and update opacity if it's time to shoot or if the Q count is 0, but only if the fire command was given
-    if ((config.q == 0 | (Date.now() - oldLaserLastShotTime >= 1000 / shotsPerSecond[config.q])) & mouse.rmb) {
+    // Do damage and update opacity if it's time to shoot or if the Q count is 0, but only if the fire command was given and mouse clicks should not be blocked
+    if ((config.q == 0 | (Date.now() - oldLaserLastShotTime >= 1000 / shotsPerSecond[config.q])) & mouse.rmb & !mouse.blockClicks) {
         // Get laser angle value
         oldLaserAngle = Math.atan2(mouse.blockY, mouse.blockX + config.range);
         oldLaserAngle += (Math.random() * 0.1 - 0.05) * Math.PI / 180; // Inaccuracy in radians
@@ -472,14 +511,26 @@ function drawOldLaser() {
 
 const rayCount = 201; // Must be odd
 function doNewLaserDamage(angle) {
-    let rayDamage = singleShotDamage * getAttenuation() / rayCount;
+    let rayDamage = singleShotDamage / rayCount;
 
     // Fire a bunch of rays where each deals a small proportion of the total damage
     for (let i = -1; i <= 1; i += 2 / (rayCount - 1)) {
         // Evenly space rays based on lateral distance, not angle
-        let newAngle = angle + Math.atan2(singleShotDamage / config.expansion * i, 100);
+        let newAngle = angle + getNewLaserRayAngle(i);
         doOldLaserDamage(newAngle, rayDamage)
     }
+}
+
+function getNewLaserSpreadAngle() {
+    if (config.version == 'basic')
+        return Math.atan2(singleShotDamage / config.expansion, 100);
+    return Math.atan2(singleShotDamage ** config.damageExponent / config.expansion, 100);
+}
+
+function getNewLaserRayAngle(i) {
+    if (config.version == 'basic')
+        return Math.atan2(singleShotDamage / config.expansion * i, 100);
+    return Math.atan2(singleShotDamage ** config.damageExponent / config.expansion * i, 100);
 }
 
 let newLaserOpacity = 0;
@@ -487,14 +538,14 @@ let newLaserLastShotTime = -1;
 let newLaserBaseAngle;
 let newLaserSpreadAngle;
 function drawNewLaser() {
-    // Do damage and update opacity if it's time to shoot or if the Q count is 0, but only if the fire command was given
-    if ((config.q == 0 | (Date.now() - newLaserLastShotTime >= 1000 / shotsPerSecond[config.q])) & mouse.lmb) {
+    // Do damage and update opacity if it's time to shoot or if the Q count is 0, but only if the fire command was given and mouse clicks should not be blocked
+    if ((config.q == 0 | (Date.now() - newLaserLastShotTime >= 1000 / shotsPerSecond[config.q])) & mouse.lmb & !mouse.blockClicks) {
         // Get laser angle values
         newLaserBaseAngle = Math.atan2(mouse.blockY, mouse.blockX + config.range);
         newLaserBaseAngle += (Math.random() * config.inaccuracy * 2 - config.inaccuracy) * Math.PI / 180; // Inaccuracy in radians
 
         // Get angles for the top and bottom edges of the beam
-        newLaserSpreadAngle = Math.atan2(singleShotDamage / config.expansion, 100);
+        newLaserSpreadAngle = getNewLaserSpreadAngle();
 
         doNewLaserDamage(newLaserBaseAngle);
         newLaserLastShotTime = Date.now();
@@ -537,9 +588,6 @@ function drawNewLaser() {
 }
 
 function drawLaser() {
-    // Exit if clicks shouldn't register
-    if (mouse.blockClicks) return;
-
     drawNewLaser();
     drawOldLaser();
 }

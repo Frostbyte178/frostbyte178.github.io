@@ -148,6 +148,13 @@ p {
     font-size: 20px;
 }
 
+.inputConfigDepthTableWrapper th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    font-size: 20px;
+}
+
 .inputConfigDepthTableWrapper tr:nth-child(even) {
     background-color: #444;
 }
